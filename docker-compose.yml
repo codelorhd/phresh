@@ -24,5 +24,17 @@ services:
     ports:
       - 5433:5432
 
+  pgadmin:
+    # http://localhost:5050
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=solomonaboyeji@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db      
+
 volumes:
     postgres_data:

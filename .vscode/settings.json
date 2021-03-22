@@ -3,5 +3,11 @@
     "django.i18n": false,
     "django.snippets.use": false,
     "django.showContributeNotification": false,
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "python.autoComplete.extraPaths": [
+        "./backend"
+    ],
+    "python.analysis.extraPaths": [
+        "./backend"
+    ],
 }
