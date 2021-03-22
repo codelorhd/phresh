@@ -24,3 +24,12 @@ https://www.jeffastor.com/blog/up-and-running-with-fastapi-and-docker#environmen
 ### - Correct Error: write the endpoint and allow it fail (pytest is gracious enough to tell us exactly what's happening)
 ### - Correct/Fix up
 ### - Retry till all tests are completed
+
+# Database/Tables
+# https://www.jeffastor.com/blog/designing-a-robust-user-model-in-a-fastapi-app
+- row back migrations: alembic downgrade base (login into your docker container)
+- prepare your sql tables (db/migrations/versions/create_main_tables)
+- run migrations: alembic upgrade head
+- prepare your pydantic models (create backend/app/models.user.py) for e.g
+- create your test and watch it fail, because of route
+- create your route and repository
