@@ -38,7 +38,7 @@ def run_migrations_online() -> None:
             default_conn.execute(f"CREATE DATABASE {POSTGRES_DB}_test")
 
     connectable = config.attributes.get("connection", None)
-    config.set_main_option("sqlalchemy.url", str(DATABASE_URL))
+    config.set_main_option("sqlalchemy.url", str(DB_URL))
 
     if connectable is None:
         connectable = engine_from_config(

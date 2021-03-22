@@ -32,12 +32,11 @@ def upgrade() -> None:
     create_cleanings_table()
 
 
-Here we're sending a POST request to our application and ensuring that the response coming from our database has the same shape and data as our input.
-
 def downgrade() -> None:
     try:
         op.drop_table("cleanings")
     except UndefinedTableError:
         pass
+
 
 from asyncpg.exceptions import UndefinedTableError
