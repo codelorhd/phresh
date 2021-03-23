@@ -10,7 +10,11 @@ from databases import Database
 
 import alembic
 from alembic.config import Config
+
+
+from app.models.user import UserCreate, UserInDB
 from app.db.repositories.cleanings import CleaningsRepository
+from app.db.repositories.users import UsersRepository
 
 from app.models.cleaning import CleaningCreate, CleaningInDB
 
@@ -63,6 +67,29 @@ async def test_cleaning(db: Database) -> CleaningInDB:
         cleaning_type="spot_clean",
     )
     return await cleaning_repo.create_cleaning(new_cleaning=new_cleaning)
+
+
+@pytest.fixture
+async def test_user(db: Database) -> UserInDB:
+    new_user = UserCreate(
+        email="testuser@solomonaboyeji.com",
+        username="testuser",
+        password="testuserpassword",
+    )
+    user_repo = UsersRepository(db)
+
+    # So why are we checking for user existence? Remember
+    # that our database persists for the duration of the
+    # testing session. With that in mind, also recall that
+    # both the username and email attributes have unique
+    # constraints on them. This is important, since we don't
+    # want more than one user with the same email or with the
+    # same username in our system.
+    existing_user = await user_repo.get_user_by_email(email=new_user.email)
+    if existing_user:
+        return existing_user
+
+    return await user_repo.register_new_user(new_user=new_user)
 
 
 # Create a new application for testing

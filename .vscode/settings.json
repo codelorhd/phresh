@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "backend/env/bin/python3.8",
+    "python.pythonPath": "backend/env/bin/python3",
     "django.i18n": false,
     "django.snippets.use": false,
     "django.showContributeNotification": false,

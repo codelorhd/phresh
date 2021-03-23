@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import EmailStr, constr
 
 from app.models.core import CoreModel, DateTimeModelMixin, IDModelMixin
+from app.models.token import AccessToken
 
 
 class UserBase(CoreModel):
@@ -47,6 +48,10 @@ class UserPasswordUpdate(CoreModel):
     """
 
     password: constr(min_length=7, max_length=100)
+
+    # salt here is a bit useless, since the library used to generate the
+    # hashed password make use of an internal salt on its own.
+    # salt here will be empty.
     salt: str
 
 
@@ -56,8 +61,11 @@ class UserInDB(IDModelMixin, DateTimeModelMixin, UserBase):
     """
 
     password: constr(min_length=7, max_length=100)
+    # salt here is a bit useless, since the library used to generate the
+    # hashed password make use of an internal salt on its own.
+    # salt here will be empty.
     salt: str
 
 
 class UserPublic(IDModelMixin, DateTimeModelMixin, UserBase):
-    pass
+    access_token: Optional[AccessToken]
