@@ -1,17 +1,22 @@
-import bcrypt, jwt
-from passlib.context import CryptContext
 from datetime import datetime, timedelta
+from typing import Optional
 
-from app.models.user import UserPasswordUpdate
+import bcrypt
+import jwt
+from fastapi import HTTPException, status
+from passlib.context import CryptContext
+from pydantic import ValidationError
+from pydantic.error_wrappers import ValidationError
+
 from app.core.config import (
-    SECRET_KEY,
+    ACCESS_TOKEN_EXPIRE_MINUTES,
     JWT_ALGORITHM,
     JWT_AUDIENCE,
     JWT_TOKEN_PREFIX,
-    ACCESS_TOKEN_EXPIRE_MINUTES,
+    SECRET_KEY,
 )
-from app.models.token import JWTMeta, JWTCreds, JWTPayload
-from app.models.user import UserPasswordUpdate, UserInDB
+from app.models.token import JWTCreds, JWTMeta, JWTPayload
+from app.models.user import UserInDB, UserPasswordUpdate
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -23,6 +28,23 @@ class AuthException(BaseException):
 
 
 class AuthService:
+    def get_username_from_token(self, *, token: str, secret_key: str) -> Optional[str]:
+        try:
+            decoded_token = jwt.decode(
+                token,
+                str(secret_key),
+                audience=JWT_AUDIENCE,
+                algorithms=[JWT_ALGORITHM],
+            )
+            payload = JWTPayload(**decoded_token)
+        except (jwt.PyJWTError, ValidationError):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate token credentials.",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        return payload.username
+
     def create_salt_and_hashed_password(
         self, *, plaintext_password: str
     ) -> UserPasswordUpdate:
@@ -38,9 +60,6 @@ class AuthService:
         return pwd_context.hash(password + salt)
 
     def verify_password(self, *, password: str, salt: str, hashed_pw: str) -> bool:
-        # salt here is a bit useless, since the library used to generate the
-        # hashed password make use of an internal salt on its own.
-        # salt here will be empty.
         return pwd_context.verify(password + salt, hashed_pw)
 
     def create_access_token_for_user(

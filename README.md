@@ -16,14 +16,9 @@ https://www.jeffastor.com/blog/up-and-running-with-fastapi-and-docker#environmen
 ## /cleaning/{id}/ ==>  DELETE ==>	Delete a cleaning by id
 
 # Creating Endpoint in TDD
-## - Write the test and let them fail
-## - Write whatever code needed to get the test run
-
-### - Write the test
-### - Run the test
-### - Correct Error: write the endpoint and allow it fail (pytest is gracious enough to tell us exactly what's happening)
-### - Correct/Fix up
-### - Retry till all tests are completed
+## -- Test:         write some test to reveal what code to write or correct (cause they failed).
+## -- Route:        write route which is called by the test, and test again.
+## -- Repository:   write the repository which is called by the route, and test again.
 
 # Database/Tables
 # https://www.jeffastor.com/blog/designing-a-robust-user-model-in-a-fastapi-app
