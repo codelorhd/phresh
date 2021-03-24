@@ -5,6 +5,18 @@ from pydantic import EmailStr, constr
 from app.models.core import CoreModel, DateTimeModelMixin, IDModelMixin
 from app.models.token import AccessToken
 
+from app.models.profile import ProfilePublic
+
+# The 5 model types we just defined demonstrate a pattern
+# that will be used for almost every resource:
+#
+# - Base   - all shared attributes of a resource
+# - Create - attributes required to create a new resource - used at POST requests
+# - Update - attributes that can be updated - used at PUT requests
+# - InDB   - attributes present on any resource coming out of the database
+# - Public - attributes present on public facing
+#            resources being returned from GET, POST, and PUT requests
+
 
 class UserBase(CoreModel):
     """
@@ -61,11 +73,9 @@ class UserInDB(IDModelMixin, DateTimeModelMixin, UserBase):
     """
 
     password: constr(min_length=7, max_length=100)
-    # salt here is a bit useless, since the library used to generate the
-    # hashed password make use of an internal salt on its own.
-    # salt here will be empty.
     salt: str
 
 
 class UserPublic(IDModelMixin, DateTimeModelMixin, UserBase):
     access_token: Optional[AccessToken]
+    profile: Optional[ProfilePublic]

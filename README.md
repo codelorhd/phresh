@@ -21,9 +21,12 @@ https://www.jeffastor.com/blog/up-and-running-with-fastapi-and-docker#environmen
 ## -- Repository:   write the repository which is called by the route, and test again.
 
 # Database/Tables
-# https://www.jeffastor.com/blog/designing-a-robust-user-model-in-a-fastapi-app
+#### https://www.jeffastor.com/blog/designing-a-robust-user-model-in-a-fastapi-app
+#### Example
+#### https://www.jeffastor.com/blog/setting-up-user-profiles-in-fastapi#creating-user-profiles
 - row back migrations: alembic downgrade base (login into your docker container)
-- prepare your sql tables (db/migrations/versions/create_main_tables)
+- prepare your sql tables (for .e.g db/migrations/versions/create_users_table)
+- add newly created create_users_table to upgrade and drop it at downgrade
 - run migrations: alembic upgrade head
 - prepare your pydantic models (create backend/app/models.user.py) for e.g
 - create your test and watch it fail, because of route

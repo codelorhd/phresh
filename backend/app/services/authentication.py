@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, Type
 
 import bcrypt
 import jwt
@@ -7,6 +7,8 @@ from fastapi import HTTPException, status
 from passlib.context import CryptContext
 from pydantic import ValidationError
 from pydantic.error_wrappers import ValidationError
+
+from app.models.user import UserBase, UserPasswordUpdate
 
 from app.core.config import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
@@ -65,12 +67,12 @@ class AuthService:
     def create_access_token_for_user(
         self,
         *,
-        user: UserInDB,
+        user: Type[UserBase],
         secret_key: str = str(SECRET_KEY),
         audience: str = JWT_AUDIENCE,
         expires_in: int = ACCESS_TOKEN_EXPIRE_MINUTES
     ) -> str:
-        if not user or not isinstance(user, UserInDB):
+        if not user or not isinstance(user, UserBase):
             return None
 
         jwt_meta = JWTMeta(

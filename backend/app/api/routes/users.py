@@ -70,4 +70,7 @@ async def register_new_user(
         token_type="bearer",
     )
 
-    return UserPublic(**created_user.dict(), access_token=access_token)
+    # Since we're now returning a UserPublic model upon registration,
+    # we can simply update the access_token attribute with our
+    # new token and return that user. Simple enough.
+    return created_user.copy(update={"access_token": access_token})
